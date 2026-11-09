@@ -1,0 +1,11 @@
+# Tasks
+- [ ] Add website-wide light and dark modes.
+- [x] Add admin login, profiles, and secure news/image/video publishing.
+- [ ] Verify publishing and restricted access; assign the real administrator after their account is identified.
+- [ ] Review Google and AI search visibility, fix supported issues and assess realistic ranking targets.
+- [ ] Add uploaded photos and video to Home and News & Insights with rotating transitions.
+- [ ] Activate and verify investor and miner email enquiries.
+- [ ] Verify media playback, bilingual labels and mobile layout.
+- [x] Add supplied company logo to site branding and browser icon.
+- [x] Add automatically updating worldwide gold prices and clearly labelled Tanzania estimates in both languages.
+- [x] Verify pricing calculations, live display, and page titles.
