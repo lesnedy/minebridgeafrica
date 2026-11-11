@@ -5,9 +5,10 @@ import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
-import { getNewsDesk, saveNewsPost, deleteNewsPost, saveAdminProfile } from "@/lib/news.functions";
+import { useSiteSession } from "@/components/site/SessionProvider";
+import { AuthCard } from "@/components/site/AuthCard";
+import { getNewsDesk, saveNewsPost, deleteNewsPost, saveAdminProfile, createNewsUpload, deleteNewsMedia, signNewsMedia } from "@/lib/news.functions";
 import { validMedia, type PostInput } from "@/lib/news-schema";
-import { NewsMedia } from "@/components/site/PublishedNews";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,7 +30,28 @@ export const Route = createFileRoute("/_authenticated/admin")({
 
 const empty: PostInput = { title_en: "", title_sw: "", body_en: "", body_sw: "", image_path: null, video_path: null, published: true };
 
+function isForbidden(error: unknown) {
+  return error instanceof Error && /forbidden|permission|policy/i.test(error.message);
+}
+
+function AdminMedia({ path, kind }: { path: string; kind: "image" | "video" }) {
+  const signMedia = useServerFn(signNewsMedia);
+  const { data, error } = useQuery({ queryKey: ["admin-media", path], queryFn: () => signMedia({ data: { path } }), retry: false, staleTime: 3000000 });
+  if (error || !data) return <p className="text-xs text-muted-foreground">—</p>;
+  return kind === "image"
+    ? <img src={data.url} alt="" className="aspect-video w-full rounded-md object-cover" />
+    : <video src={data.url} controls preload="metadata" className="aspect-video w-full rounded-md bg-navy-deep" />;
+}
+
 function AdminPage() {
+  const { t } = useI18n();
+  const { user, loading } = useSiteSession();
+  if (loading) return <p className="container-site py-16">{t.admin.loading}</p>;
+  if (!user) return <AuthCard />;
+  return <NewsDesk />;
+}
+
+function NewsDesk() {
   const { t } = useI18n();
   const qc = useQueryClient();
   const navigate = useNavigate();
@@ -37,6 +59,8 @@ function AdminPage() {
   const save = useServerFn(saveNewsPost);
   const del = useServerFn(deleteNewsPost);
   const saveProfile = useServerFn(saveAdminProfile);
+  const requestUpload = useServerFn(createNewsUpload);
+  const removeUpload = useServerFn(deleteNewsMedia);
   const { data, isLoading, error } = useQuery({ queryKey: ["news-desk"], queryFn: () => fetchDesk() });
   const [form, setForm] = useState<PostInput>(empty);
   const [busy, setBusy] = useState<string | null>(null);
@@ -51,20 +75,30 @@ function AdminPage() {
     if (!file || !data) return;
     if (!validMedia(file, kind)) { toast.error(t.admin.mediaLimit); return; }
     setBusy(t.admin.uploading);
-    const ext = ({ "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "video/mp4": "mp4", "video/webm": "webm" } as Record<string, string>)[file.type];
-    const path = `${data.userId}/${crypto.randomUUID()}.${ext}`;
-    const { error } = await supabase.storage.from("news-media").upload(path, file, { contentType: file.type });
-    setBusy(null);
-    if (error) { toast.error(t.admin.error); return; }
-    setForm(f => ({ ...f, [kind === "image" ? "image_path" : "video_path"]: path }));
+    try {
+      const target = await requestUpload({ data: { kind, contentType: file.type } });
+      const bucket = supabase.storage.from("news-media");
+      const result = target.token
+        ? await bucket.uploadToSignedUrl(target.path, target.token, file, { contentType: file.type })
+        : await bucket.upload(target.path, file, { contentType: file.type, upsert: false });
+      if (result.error) throw result.error;
+      setForm(f => ({ ...f, [kind === "image" ? "image_path" : "video_path"]: target.path }));
+    } catch (err) {
+      toast.error(isForbidden(err) ? t.admin.denied : t.admin.error);
+    } finally {
+      setBusy(null);
+    }
   }
 
   async function removeMedia(kind: "image" | "video") {
     const path = kind === "image" ? form.image_path : form.video_path;
     if (!path) return;
-    const { error } = await supabase.storage.from("news-media").remove([path]);
-    if (error) { toast.error(t.admin.error); return; }
-    setForm(f => ({ ...f, [kind === "image" ? "image_path" : "video_path"]: null }));
+    try {
+      await removeUpload({ data: { path } });
+      setForm(f => ({ ...f, [kind === "image" ? "image_path" : "video_path"]: null }));
+    } catch {
+      toast.error(t.admin.error);
+    }
   }
   async function submit(e: FormEvent, published: boolean) {
     e.preventDefault(); setBusy(t.admin.busy);
@@ -72,22 +106,22 @@ function AdminPage() {
       await save({ data: { ...form, published } });
       toast.success(t.admin.saved); setForm(empty);
       await qc.invalidateQueries();
-    } catch { toast.error(t.admin.error); } finally { setBusy(null); }
+    } catch (err) { toast.error(isForbidden(err) ? t.admin.denied : t.admin.error); } finally { setBusy(null); }
   }
   async function remove(id: string) {
     if (!confirm(t.admin.confirmDelete)) return;
-    try { await del({ data: { id } }); await qc.invalidateQueries(); } catch { toast.error(t.admin.error); }
+    try { await del({ data: { id } }); await qc.invalidateQueries(); } catch (err) { toast.error(isForbidden(err) ? t.admin.denied : t.admin.error); }
   }
 
   if (isLoading) return <p className="container-site py-16">{t.admin.loading}</p>;
   if (error || !data) return <p className="container-site py-16">{t.admin.error}</p>;
   const header = <div className="flex flex-wrap items-center justify-between gap-3"><h1 className="text-3xl font-bold text-navy">{t.admin.dashboard}</h1><Button variant="outline" onClick={signOut}>{t.admin.signOut}</Button></div>;
   if (!data.allowed) return <div className="container-site py-16">{header}<p className="mt-6 rounded-lg border bg-card p-6 text-muted-foreground">{t.admin.denied}</p></div>;
-
   const set = (k: keyof PostInput) => (e: { target: { value: string } }) => setForm(f => ({ ...f, [k]: e.target.value }));
   return (
     <div className="container-site space-y-10 py-12">
       {header}
+      {!data.canWrite && <p className="rounded-xl border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive">{t.admin.setupRequired}</p>}
       <section className="rounded-xl border bg-card p-6">
         <h2 className="text-xl font-semibold">{t.admin.profile}</h2>
         <form className="mt-4 flex flex-wrap items-end gap-3" onSubmit={async e => { e.preventDefault(); try { await saveProfile({ data: { display_name: name ?? data.profile?.display_name ?? "", avatar_url: data.profile?.avatar_url ?? "" } }); toast.success(t.admin.saved); } catch { toast.error(t.admin.error); } }}>
@@ -104,9 +138,9 @@ function AdminPage() {
           <div className="grid gap-2"><Label htmlFor="ben">{t.admin.body} (English)</Label><Textarea id="ben" required rows={7} value={form.body_en} onChange={set("body_en")} /></div>
           <div className="grid gap-2"><Label htmlFor="bsw">{t.admin.body} (Kiswahili)</Label><Textarea id="bsw" required rows={7} value={form.body_sw} onChange={set("body_sw")} /></div>
           <div className="grid gap-2"><Label htmlFor="img">{t.admin.image}</Label><Input id="img" type="file" accept="image/jpeg,image/png,image/webp" onChange={async e => { const file = e.target.files?.[0]; await upload(file, "image"); e.target.value = ""; }} />
-            {form.image_path && <div className="space-y-2"><NewsMedia path={form.image_path} kind="image" title="" /><Button type="button" size="sm" variant="ghost" onClick={() => void removeMedia("image")}>{t.admin.removeImage}</Button></div>}</div>
+            {form.image_path && <div className="space-y-2"><AdminMedia path={form.image_path} kind="image" /><Button type="button" size="sm" variant="ghost" onClick={() => void removeMedia("image")}>{t.admin.removeImage}</Button></div>}</div>
           <div className="grid gap-2"><Label htmlFor="vid">{t.admin.video}</Label><Input id="vid" type="file" accept="video/mp4,video/webm" onChange={async e => { const file = e.target.files?.[0]; await upload(file, "video"); e.target.value = ""; }} />
-            {form.video_path && <div className="space-y-2"><NewsMedia path={form.video_path} kind="video" title="" /><Button type="button" size="sm" variant="ghost" onClick={() => void removeMedia("video")}>{t.admin.removeVideo}</Button></div>}</div>
+            {form.video_path && <div className="space-y-2"><AdminMedia path={form.video_path} kind="video" /><Button type="button" size="sm" variant="ghost" onClick={() => void removeMedia("video")}>{t.admin.removeVideo}</Button></div>}</div>
           <p className="text-xs text-muted-foreground md:col-span-2">{t.admin.mediaLimit}</p>
           <div className="flex flex-wrap gap-3 md:col-span-2">
             <Button type="submit" variant="gold" disabled={!!busy}>{busy ?? t.admin.publish}</Button>

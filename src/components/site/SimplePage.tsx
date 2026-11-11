@@ -1,4 +1,5 @@
-import { CheckCircle2, Clock, FileCheck2, FileClock, FileText, Landmark, Mail, MapPin, MessageCircle, Phone, ShieldCheck, Sparkles } from "lucide-react";
+import { CheckCircle2, Clock, FileCheck2, FileClock, FileText, Landmark, Mail, MapPin, MessageCircle, Phone, ShieldCheck, Sparkles, ArrowRight, Quote } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 import { CONTACT, whatsappLink, mailLink } from "@/lib/contact";
 import { news, opportunities, professionals } from "@/lib/data";
@@ -15,6 +16,7 @@ import heroImg from "@/assets/hero-mine.jpg";
 import goldImg from "@/assets/gold-ore.jpg";
 import prosImg from "@/assets/professionals.jpg";
 import invImg from "@/assets/investors.jpg";
+import ceoImg from "@/assets/ceo-clinton-msety.png";
 
 export type PageKey = "about" | "services" | "opportunities" | "investors" | "miners" | "news" | "directory" | "contact" | "legal";
 
@@ -46,6 +48,48 @@ function AboutPage() {
             <span className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-gold text-gold-foreground shadow-gold"><Landmark className="h-5 w-5" /></span>
             <h3 className="mt-4 text-xl font-bold text-navy">{t.about.mission}</h3>
             <p className="mt-3 leading-relaxed text-muted-foreground">{t.about.missionText}</p>
+          </div>
+        </div>
+      </Section>
+      <Section className="bg-gradient-navy text-on-navy">
+        <div className="grid items-center gap-12 lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-16">
+          <div className="relative mx-auto w-full max-w-[360px]">
+            <div aria-hidden className="absolute -inset-5 rounded-[2.5rem] bg-gold/15 blur-2xl" />
+            <figure className="relative overflow-hidden rounded-[1.75rem] border border-gold/40 bg-navy-deep shadow-elegant">
+              <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgb(212_175_55/0.22),transparent_62%)]" />
+              <img src={ceoImg} alt={t.about.ceo.name} loading="lazy" className="relative aspect-[585/731] w-full object-cover" />
+              <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy-deep from-30% via-navy-deep/90 to-transparent px-5 pb-5 pt-24">
+                <span aria-hidden className="mb-3 block h-px w-10 bg-gold" />
+                <p className="font-display text-lg font-bold text-on-navy">{t.about.ceo.name}</p>
+                <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-gold">{t.about.ceo.role}</p>
+              </figcaption>
+            </figure>
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gold">{t.about.ceo.eyebrow}</p>
+            <h2 className="mt-3 text-3xl font-bold text-on-navy md:text-4xl">{t.about.ceo.title}</h2>
+            <blockquote className="mt-6 border-l-2 border-gold/60 pl-5 font-display text-lg leading-relaxed text-on-navy/90 md:text-xl">
+              <Quote aria-hidden className="mb-2 h-6 w-6 text-gold/70" />
+              {t.about.ceo.quote}
+            </blockquote>
+            <div className="mt-6 space-y-4 leading-relaxed text-on-navy/75">
+              {t.about.ceo.bio.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            </div>
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              {t.about.ceo.highlights.map(([title, text]) => (
+                <div key={title} className="rounded-xl border border-on-navy/15 bg-on-navy/5 p-4 transition hover:border-gold/40 hover:bg-on-navy/10">
+                  <p className="flex items-center gap-2 text-sm font-semibold text-on-navy"><Sparkles className="h-4 w-4 text-gold" />{title}</p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-on-navy/70">{text}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 rounded-2xl border border-on-navy/15 bg-on-navy/5 p-5">
+              <p className="font-display text-lg font-bold text-on-navy">{t.about.ceo.ctaTitle}</p>
+              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-3">
+                <Button asChild variant="gold" className="rounded-full"><Link to="/contact">{t.about.ceo.ctaButton}<ArrowRight /></Link></Button>
+                <p className="max-w-sm text-sm text-on-navy/70">{t.about.ceo.ctaText}</p>
+              </div>
+            </div>
           </div>
         </div>
       </Section>

@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 export type Lang = "en" | "sw";
 
 const en = {
-  admin: { login: "Admin login", dashboard: "News desk", signIn: "Sign in", signUp: "Create account", password: "Password", displayName: "Display name", avatar: "Avatar URL", profile: "My profile", saveProfile: "Save profile", signOut: "Sign out", google: "Continue with Google", lovable: "Continue with Lovable", confirm: "Check your email to confirm your account before signing in.", emailNotConfirmed: "This account's email is not confirmed yet. Resend the confirmation email, then sign in again.", resendConfirmation: "Resend confirmation email", confirmResent: "If the account can be confirmed, a confirmation email has been sent.", denied: "Your account is awaiting administrator approval.", forgot: "Forgot password?", reset: "Reset password", resetSent: "If an account exists, a password reset link has been sent.", newPassword: "New password", resetInvalid: "Open a valid password recovery link from your email.", title: "Title", body: "Article", image: "Image", video: "Video", publish: "Publish", draft: "Save draft", published: "Published", drafts: "Draft", edit: "Edit", remove: "Delete", confirmDelete: "Delete this article?", newPost: "New article", saved: "Saved successfully", error: "Something went wrong. Please try again.", uploading: "Uploading…", busy: "Please wait…", empty: "No articles yet.", latest: "Latest news", mediaLimit: "Choose a JPG, PNG, WebP image or MP4/WebM video up to 50 MB.", light: "Switch to light mode", dark: "Switch to dark mode", english: "English", swahili: "Kiswahili", cancel: "Cancel", removeImage: "Remove image", removeVideo: "Remove video", loading: "Loading…" },
+  admin: { login: "Admin login", dashboard: "News desk", signIn: "Sign in", signUp: "Create account", password: "Password", displayName: "Display name", avatar: "Avatar URL", profile: "My profile", saveProfile: "Save profile", signOut: "Sign out", google: "Continue with Google", lovable: "Continue with Lovable", confirm: "Check your email to confirm your account before signing in.", emailNotConfirmed: "This account's email is not confirmed yet. Resend the confirmation email, then sign in again.", resendConfirmation: "Resend confirmation email", confirmResent: "If the account can be confirmed, a confirmation email has been sent.", denied: "Your account is awaiting administrator approval.", forgot: "Forgot password?", reset: "Reset password", resetSent: "If an account exists, a password reset link has been sent.", newPassword: "New password", resetInvalid: "Open a valid password recovery link from your email.", title: "Title", body: "Article", image: "Image", video: "Video", publish: "Publish", draft: "Save draft", published: "Published", drafts: "Draft", edit: "Edit", remove: "Delete", confirmDelete: "Delete this article?", newPost: "New article", saved: "Saved successfully", error: "Something went wrong. Please try again.", uploading: "Uploading…", busy: "Please wait…", empty: "No articles yet.", latest: "Latest news", mediaLimit: "Choose a JPG, PNG, WebP image or MP4/WebM video up to 50 MB.", light: "Switch to light mode", dark: "Switch to dark mode", english: "English", swahili: "Kiswahili", cancel: "Cancel", removeImage: "Remove image", removeVideo: "Remove video", loading: "Loading…", setupRequired: "Publishing is not enabled for this account yet. Ask the site developer to finish the admin setup, then reload this page." },
 
   brand: { name: "MineBridge Africa", logo: "MineBridge Africa company logo" },
   media: { title: "From the Mining Site", eyebrow: "MINEBRIDGE AFRICA • FIELD GALLERY", photos: ["Washing ore by hand in basins", "Rinsing the carpet sluice", "Weighing recovered gold bars", "A wooden sluice box in the stream", "A hand-dug shaft with windlass and bucket"], video: "Mining site video", previous: "Previous media", next: "Next media", pause: "Pause rotation", play: "Resume rotation", select: "View media" },
@@ -102,6 +102,27 @@ const en = {
       ["Partnership & Collaboration", "Long-term relationships over quick deals."],
       ["Community Development", "Growth that benefits local communities."],
     ],
+    ceo: {
+      eyebrow: "LEADERSHIP",
+      title: "Meet Our Chief Executive Officer",
+      name: "Mr. Clinton Msety",
+      role: "Founder & Chief Executive Officer",
+      quote: "Africa's mineral wealth is not only in the ground — it is in its people, its partnerships and the integrity we bring to every agreement.",
+      bio: [
+        "Clinton Msety founded MineBridge Africa on a simple conviction: the continent's mineral wealth should create lasting value for the communities that host it. From Chunya — one of Tanzania's historic gold districts — he has built a bridge between artisanal miners, licensed operators, investors and institutions.",
+        "He leads the company's strategy, partnerships and stakeholder relationships, turning fragmented opportunities into credible, well-documented prospects and helping investors read Tanzania's mining sector with clarity rather than speculation.",
+        "His leadership is grounded in transparency, responsible practice and long-term partnership. Under his direction, MineBridge Africa is building a platform where information is honest, verification is respected and every participant knows exactly who they are dealing with.",
+      ],
+      highlights: [
+        ["Visionary Leadership", "Setting the direction for a modern, trusted African mining intermediary."],
+        ["Strategic Partnerships", "Bringing miners, investors and institutions together around shared goals."],
+        ["Responsible Growth", "Championing safety, legality and community benefit in every engagement."],
+        ["Local Insight", "Deep, on-the-ground knowledge of Tanzania's goldfields, from Chunya outwards."],
+      ],
+      ctaTitle: "Work with our team",
+      ctaText: "Have a project, an opportunity or a question? Start a conversation with the office of the CEO.",
+      ctaButton: "Contact us",
+    },
   },
   services: {
     listTitle: "Mining Connection & Support",
@@ -176,7 +197,7 @@ type Dict = typeof en;
 export type MiningStageId = keyof Dict["process"]["items"];
 
 const sw: Dict = {
-  admin: { login: "Ingia kama msimamizi", dashboard: "Usimamizi wa habari", signIn: "Ingia", signUp: "Fungua akaunti", password: "Nenosiri", displayName: "Jina la kuonyesha", avatar: "Anwani ya picha ya wasifu", profile: "Wasifu wangu", saveProfile: "Hifadhi wasifu", signOut: "Ondoka", google: "Endelea na Google", lovable: "Endelea na Lovable", confirm: "Angalia barua pepe yako kuthibitisha akaunti kabla ya kuingia.", emailNotConfirmed: "Barua pepe ya akaunti hii bado haijathibitishwa. Tuma tena barua pepe ya uthibitisho, kisha ujaribu kuingia.", resendConfirmation: "Tuma tena barua pepe ya uthibitisho", confirmResent: "Ikiwa akaunti inaweza kuthibitishwa, barua pepe ya uthibitisho imetumwa.", denied: "Akaunti yako inasubiri idhini ya msimamizi.", forgot: "Umesahau nenosiri?", reset: "Weka upya nenosiri", resetSent: "Ikiwa akaunti ipo, kiungo cha kuweka upya nenosiri kimetumwa.", newPassword: "Nenosiri jipya", resetInvalid: "Fungua kiungo halali cha kurejesha nenosiri kutoka kwenye barua pepe yako.", title: "Kichwa", body: "Makala", image: "Picha", video: "Video", publish: "Chapisha", draft: "Hifadhi rasimu", published: "Imechapishwa", drafts: "Rasimu", edit: "Hariri", remove: "Futa", confirmDelete: "Futa makala hii?", newPost: "Makala mpya", saved: "Imehifadhiwa", error: "Tatizo limetokea. Tafadhali jaribu tena.", uploading: "Inapakia…", busy: "Tafadhali subiri…", empty: "Hakuna makala bado.", latest: "Habari mpya", mediaLimit: "Chagua picha ya JPG, PNG, WebP au video ya MP4/WebM isiyozidi MB 50.", light: "Washa mwonekano mweupe", dark: "Washa mwonekano wa giza", english: "Kiingereza", swahili: "Kiswahili", cancel: "Ghairi", removeImage: "Ondoa picha", removeVideo: "Ondoa video", loading: "Inapakia…" },
+  admin: { login: "Ingia kama msimamizi", dashboard: "Usimamizi wa habari", signIn: "Ingia", signUp: "Fungua akaunti", password: "Nenosiri", displayName: "Jina la kuonyesha", avatar: "Anwani ya picha ya wasifu", profile: "Wasifu wangu", saveProfile: "Hifadhi wasifu", signOut: "Ondoka", google: "Endelea na Google", lovable: "Endelea na Lovable", confirm: "Angalia barua pepe yako kuthibitisha akaunti kabla ya kuingia.", emailNotConfirmed: "Barua pepe ya akaunti hii bado haijathibitishwa. Tuma tena barua pepe ya uthibitisho, kisha ujaribu kuingia.", resendConfirmation: "Tuma tena barua pepe ya uthibitisho", confirmResent: "Ikiwa akaunti inaweza kuthibitishwa, barua pepe ya uthibitisho imetumwa.", denied: "Akaunti yako inasubiri idhini ya msimamizi.", forgot: "Umesahau nenosiri?", reset: "Weka upya nenosiri", resetSent: "Ikiwa akaunti ipo, kiungo cha kuweka upya nenosiri kimetumwa.", newPassword: "Nenosiri jipya", resetInvalid: "Fungua kiungo halali cha kurejesha nenosiri kutoka kwenye barua pepe yako.", title: "Kichwa", body: "Makala", image: "Picha", video: "Video", publish: "Chapisha", draft: "Hifadhi rasimu", published: "Imechapishwa", drafts: "Rasimu", edit: "Hariri", remove: "Futa", confirmDelete: "Futa makala hii?", newPost: "Makala mpya", saved: "Imehifadhiwa", error: "Tatizo limetokea. Tafadhali jaribu tena.", uploading: "Inapakia…", busy: "Tafadhali subiri…", empty: "Hakuna makala bado.", latest: "Habari mpya", mediaLimit: "Chagua picha ya JPG, PNG, WebP au video ya MP4/WebM isiyozidi MB 50.", light: "Washa mwonekano mweupe", dark: "Washa mwonekano wa giza", english: "Kiingereza", swahili: "Kiswahili", cancel: "Ghairi", removeImage: "Ondoa picha", removeVideo: "Ondoa video", loading: "Inapakia…", setupRequired: "Uchapishaji bado haujawashwa kwa akaunti hii. Mwombe msanidi wa tovuti akamilishe usanidi wa msimamizi, kisha upakie ukurasa huu upya." },
 
   brand: { name: "MineBridge Africa", logo: "Nembo ya kampuni ya MineBridge Africa" },
   media: { title: "Kutoka Eneo la Uchimbaji", eyebrow: "MINEBRIDGE AFRICA • PICHA ZA ENEO", photos: ["Kuosha madini kwa mikono kwenye mabeseni", "Kusafisha zulia la mfereji", "Kupima baa za dhahabu zilizopatikana", "Sanduku la mfereji wa mbao mtoni", "Shimo lililochimbwa kwa mkono lenye koki na ndoo"], video: "Video ya eneo la uchimbaji", previous: "Picha au video iliyotangulia", next: "Picha au video inayofuata", pause: "Sitisha mzunguko", play: "Endeleza mzunguko", select: "Tazama picha au video" },
@@ -275,6 +296,27 @@ const sw: Dict = {
       ["Ushirikiano", "Mahusiano ya muda mrefu kuliko mikataba ya haraka."],
       ["Maendeleo ya Jamii", "Ukuaji unaonufaisha jamii za ndani."],
     ],
+    ceo: {
+      eyebrow: "UONGOZI",
+      title: "Kutana na Mkurugenzi Mtendaji Wetu",
+      name: "Bw. Clinton Msety",
+      role: "Mwanzilishi na Mkurugenzi Mtendaji",
+      quote: "Utajiri wa madini wa Afrika haupo ardhini pekee — upo kwa watu wake, kwa ushirikiano wake na kwa uadilifu tunaouleta katika kila makubaliano.",
+      bio: [
+        "Clinton Msety alianzisha MineBridge Africa kwa imani moja rahisi: utajiri wa madini wa bara hili unapaswa kuleta manufaa ya kudumu kwa jamii zinazoukaribisha. Kutoka Chunya — mojawapo ya wilaya kongwe za dhahabu Tanzania — amejenga daraja kati ya wachimbaji wadogo, waendeshaji wenye leseni, wawekezaji na taasisi.",
+        "Anaongoza mkakati wa kampuni, ushirikiano na mahusiano na wadau, akibadilisha fursa zilizotawanyika kuwa miradi ya kuaminika na yenye nyaraka kamili, na kuwasaidia wawekezaji kuifasiri sekta ya madini ya Tanzania kwa uwazi badala ya uvumi.",
+        "Uongozi wake umejikita katika uwazi, uchimbaji wenye uwajibikaji na ushirikiano wa muda mrefu. Chini ya mwongozo wake, MineBridge Africa inajenga jukwaa ambapo taarifa ni za kweli, uhakiki unaheshimiwa na kila mshiriki anajua bayana anayeshirikiana naye.",
+      ],
+      highlights: [
+        ["Uongozi wa Maono", "Kuweka mwelekeo wa sekta ya madini ya Afrika ya kisasa inayoaminika."],
+        ["Ushirikiano wa Kimkakati", "Kuunganisha wachimbaji, wawekezaji na taasisi kwa malengo ya pamoja."],
+        ["Ukuaji Wenye Uwajibikaji", "Kutetea usalama, uhalali na manufaa kwa jamii katika kila hatua."],
+        ["Utaalamu wa Ndani", "Ujuzi wa kina wa maeneo ya dhahabu Tanzania, kuanzia Chunya na kuelekea kanda pana."],
+      ],
+      ctaTitle: "Fanya kazi na timu yetu",
+      ctaText: "Una mradi, fursa au swali? Anzisha mazungumzo na ofisi ya Mkurugenzi Mtendaji.",
+      ctaButton: "Wasiliana nasi",
+    },
   },
   services: {
     listTitle: "Uhusiano na Msaada wa Sekta ya Madini",
